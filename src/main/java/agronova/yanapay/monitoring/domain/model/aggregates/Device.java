@@ -32,8 +32,7 @@ public class Device extends BaseDomainModel {
         this.isOnline = false;
     }
 
-    public Device update(String code, boolean isOnline) {
-        this.deviceCode = code;
+    public Device updateConnectionStatus(boolean isOnline) {
         this.isOnline = isOnline;
 
         return this;
