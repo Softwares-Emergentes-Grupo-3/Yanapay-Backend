@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17.4
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: yanapay
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    networks:
+      - yanapay-net
+
+  mongo:
+    image: mongo:8.0.9
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - yanapay-net
+
+  yanapay:
+    build: .
+    container_name: yanapay_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/yanapay
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/Yanapay
+    depends_on:
+      - postgres
+      - mongo
+    networks:
+      - yanapay-net
+
+networks:
+  yanapay-net:
+    driver: bridge
