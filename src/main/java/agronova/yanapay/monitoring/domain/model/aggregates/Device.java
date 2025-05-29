@@ -1,9 +1,8 @@
 package agronova.yanapay.monitoring.domain.model.aggregates;
 
+import agronova.yanapay.greenhouses.domain.model.aggregates.Greenhouse;
 import agronova.yanapay.shared.domain.model.aggregates.BaseDomainModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,15 +19,21 @@ public class Device extends BaseDomainModel {
     @Column(name = "is_online", nullable = false)
     private boolean isOnline;
 
+    @ManyToOne()
+    @JoinColumn(name = "greenhouse_id", nullable = true)
+    private Greenhouse greenhouse;
+
     public Device() {
         super();
         this.deviceCode = UUID.randomUUID().toString();
+        this.greenhouse = null;
         this.isOnline = false;
     }
 
     public Device(String deviceCode) {
         super();
         this.deviceCode = deviceCode;
+        this.greenhouse = null;
         this.isOnline = false;
     }
 
@@ -36,5 +41,13 @@ public class Device extends BaseDomainModel {
         this.isOnline = isOnline;
 
         return this;
+    }
+
+    public void linkToGreenhouse(Greenhouse greenhouse) {
+        this.greenhouse = greenhouse;
+    }
+
+    public void unlinkFromGreenhouse() {
+        this.greenhouse = null;
     }
 }
