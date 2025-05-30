@@ -10,7 +10,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@MqttTopicHandler(topic = "iot/devices/+/connection_status")
+@MqttTopicHandler(topic = "yanapay/devices/+/connection_status")
 @Component
 public class DeviceConnectionStatusHandler implements MqttMessageHandler {
 
