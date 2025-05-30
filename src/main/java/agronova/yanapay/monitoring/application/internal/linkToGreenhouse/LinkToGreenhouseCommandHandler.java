@@ -1,6 +1,8 @@
 package agronova.yanapay.monitoring.application.internal.linkToGreenhouse;
 
 import agronova.yanapay.greenhouses.domain.model.infrastructure.persistence.jpa.repositories.GreenhouseRepository;
+import agronova.yanapay.monitoring.domain.services.insertMonitoringReportCache.IInsertMonitoringReportCacheCommandHandler;
+import agronova.yanapay.monitoring.domain.services.insertMonitoringReportCache.InsertMonitoringReportCacheCommand;
 import agronova.yanapay.monitoring.domain.services.linkToGreenhouse.ILinkToGreenhouseCommandHandler;
 import agronova.yanapay.monitoring.domain.services.linkToGreenhouse.LinkToGreenhouseCommand;
 import agronova.yanapay.monitoring.infrastructure.persistence.jpa.repositories.DeviceRepository;
@@ -14,11 +16,13 @@ public class LinkToGreenhouseCommandHandler implements ILinkToGreenhouseCommandH
 
     private final DeviceRepository deviceRepository;
     private final GreenhouseRepository greenhouseRepository;
+    private final IInsertMonitoringReportCacheCommandHandler insertMonitoringReportCommandHandler;
 
     @Autowired
-    public LinkToGreenhouseCommandHandler(DeviceRepository deviceRepository, GreenhouseRepository greenhouseRepository) {
+    public LinkToGreenhouseCommandHandler(DeviceRepository deviceRepository, GreenhouseRepository greenhouseRepository, IInsertMonitoringReportCacheCommandHandler insertMonitoringReportCommandHandler) {
         this.deviceRepository = deviceRepository;
         this.greenhouseRepository = greenhouseRepository;
+        this.insertMonitoringReportCommandHandler = insertMonitoringReportCommandHandler;
     }
 
     @Override
@@ -47,6 +51,14 @@ public class LinkToGreenhouseCommandHandler implements ILinkToGreenhouseCommandH
 
         // Save the device
         deviceRepository.save(device);
+
+        // Insert a monitoring report to indicate the device is linked to the greenhouse
+        var reportCommand = new InsertMonitoringReportCacheCommand(
+                device.getDeviceCode(),
+                device.getGreenhouse().getId()
+        );
+
+        insertMonitoringReportCommandHandler.handle(reportCommand);
 
         return "Device linked to greenhouse successfully: " + command.deviceCode();
     }
