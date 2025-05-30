@@ -28,7 +28,7 @@ public class MqttCallbackHandler implements MqttCallback {
 
         MqttMessageHandler handler = registry.getHandler(topic);
         if (handler != null) {
-            handler.handle(topic, message);
+            handler.handle(message);
         } else {
             System.out.println("No handler found for topic: " + topic);
         }
