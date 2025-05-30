@@ -22,7 +22,7 @@ public class DeviceConnectionStatusHandler implements MqttMessageHandler {
     }
 
     @Override
-    public void handle(String topic, MqttMessage message) {
+    public void handle(MqttMessage message) {
         String messageString = new String(message.getPayload());
         System.out.println("Handling device status: " + messageString);
 
